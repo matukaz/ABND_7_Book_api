@@ -4,20 +4,35 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="@dimen/activity_horizontal_margin"
-    tools:context="com.teddydev.abnd_7_book_api.MainActivity"
-    android:orientation="vertical">
+    tools:context="com.teddydev.abnd_7_book_api.MainActivity">
 
     <EditText
         android:id="@+id/search_edittext"
-        android:hint="@string/search_for_a_book"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/search_for_a_book"
         android:imeOptions="actionDone"
-        android:inputType="text"/>
+        android:inputType="text" />
+
+    <ProgressBar
+        android:id="@+id/progressbar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:indeterminate="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/msg_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/press_above_field_and_enter_a_book_name_or_search_by_a_word"/>
+
     <ListView
         android:id="@+id/list"
-        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 </LinearLayout>

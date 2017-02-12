@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">ABND_7_book_api</string>
     <string name="search_for_a_book">Search for a book</string>
+    <string name="press_above_field_and_enter_a_book_name_or_search_by_a_word">Press above field and enter a book name or search by a word.</string>
+    <string name="no_internet">No internet connection.</string>
+    <string name="fetching_error">Something went wrong :(. Please try again.</string>
 </resources>

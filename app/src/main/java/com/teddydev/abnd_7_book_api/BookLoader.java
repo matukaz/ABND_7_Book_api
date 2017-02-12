@@ -4,6 +4,7 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 
 import com.teddydev.abnd_7_book_api.Model.Book;
+import com.teddydev.abnd_7_book_api.Util.NetworkUtil;
 
 import java.util.List;
 
@@ -25,6 +26,6 @@ public class BookLoader extends AsyncTaskLoader<List<Book>> {
         if (url == null) {
             return null;
         }
-        return Utils.fetchBookData(url);
+        return NetworkUtil.fetchBookData(url);
     }
 }

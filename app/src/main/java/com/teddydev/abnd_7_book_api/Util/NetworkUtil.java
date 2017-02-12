@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.teddydev.abnd_7_book_api;
+package com.teddydev.abnd_7_book_api.Util;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -39,15 +39,21 @@ import java.util.List;
  * Utility class with methods to help perform the HTTP request and
  * parse the response.
  */
-public final class Utils {
+public final class NetworkUtil {
 
     /** Tag for the log messages */
-    public static final String LOG_TAG = Utils.class.getSimpleName();
+    public static final String LOG_TAG = NetworkUtil.class.getSimpleName();
 
 
     public static List<Book> fetchBookData(String requestUrl) {
         // Create URL object
         URL url = createUrl(requestUrl);
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         // Perform HTTP request to the URL and receive a JSON response back
         String jsonResponse = null;
@@ -101,6 +107,7 @@ public final class Utils {
                 jsonResponse = readFromStream(inputStream);
             } else {
                 Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
+                return null;
             }
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem retrieving the JSON results.", e);

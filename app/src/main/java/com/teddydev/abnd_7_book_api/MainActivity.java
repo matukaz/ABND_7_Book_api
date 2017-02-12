@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.teddydev.abnd_7_book_api.Model.Book;
@@ -23,6 +24,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private ListView listView;
     private EditText searchEditText;
+    private TextView msgTextView;
+    private ProgressBar progressbar;
     private SimpleImageListAdapter bookAdapter;
 
     private String BASE_URL = "https://www.googleapis.com/books/v1/volumes?q=android";
@@ -33,9 +36,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 Bundle bundle = new Bundle();
-                bundle.putString("URL", buildUrl(searchEditText.getText().toString()));
-                getLoaderManager().restartLoader(0, bundle, MainActivity.this).forceLoad();
-                Util.hideKeyboard(MainActivity.this);
+                bundle.putString(Const.EXTRA_URL, buildUrl(searchEditText.getText().toString()));
+                if (!Util.isInternetConnection(MainActivity.this)) {
+                    msgTextView.setText(getString(R.string.no_internet));
+                } else {
+                    getLoaderManager().restartLoader(0, bundle, MainActivity.this).forceLoad();
+                    Util.hideKeyboard(MainActivity.this);
+                    searchEditText.setFocusable(false);
+                }
                 return true;
             }
             return false;
@@ -55,31 +63,38 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
 
         bookAdapter = new SimpleImageListAdapter(this, bookList);
-
         listView = (ListView) findViewById(R.id.list);
-
         listView.setAdapter(bookAdapter);
 
         searchEditText = (EditText) findViewById(R.id.search_edittext);
         searchEditText.setOnEditorActionListener(searchOnEditActionListener);
 
+        msgTextView = (TextView) findViewById(R.id.msg_textview);
+
+        progressbar = (ProgressBar) findViewById(R.id.progressbar);
     }
 
 
     @Override
     public Loader<List<Book>> onCreateLoader(int i, Bundle bundle) {
-        return new BookLoader(this, bundle.getString("URL"));
+        progressbar.setVisibility(View.VISIBLE);
+        msgTextView.setVisibility(View.GONE);
+        return new BookLoader(this, bundle.getString(Const.EXTRA_URL));
     }
 
     @Override
     public void onLoadFinished(Loader<List<Book>> loader, List<Book> books) {
-
         this.bookList.clear();
         if (books != null && !books.isEmpty()) {
             this.bookList.addAll(books);
             bookAdapter.notifyDataSetChanged();
+            listView.setVisibility(View.VISIBLE);
+        } else {
+            msgTextView.setText(getString(R.string.fetching_error));
         }
-        listView.setVisibility(View.VISIBLE);
+
+        searchEditText.setFocusableInTouchMode(true);
+        progressbar.setVisibility(View.GONE);
     }
 
     @Override
