@@ -1,10 +1,16 @@
 package com.teddydev.abnd_7_book_api;
 
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -28,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private ProgressBar progressbar;
     private SimpleImageListAdapter bookAdapter;
 
-    private String BASE_URL = "https://www.googleapis.com/books/v1/volumes?q=android";
+    private String BASE_URL = "https://www.googleapis.com/books/v1/volumes";
 
     private EditText.OnEditorActionListener searchOnEditActionListener = new EditText.OnEditorActionListener() {
 
@@ -50,11 +56,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     };
 
-    private String buildUrl(String parameter) {
-        StringBuilder url = new StringBuilder();
-        url.append(BASE_URL);
-        url.append(parameter);
-        return url.toString();
+    private String buildUrl(String searchParameter) {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String maxResults = sharedPrefs.getString(
+                getString(R.string.settings_max_results_shown_key),
+                getString(R.string.settings_max_results_show_default));
+        Uri baseUri = Uri.parse(BASE_URL);
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+        uriBuilder.appendQueryParameter("q", searchParameter);
+        //Bug with more than 40 maxResults due to API limitations
+        uriBuilder.appendQueryParameter("maxResults", maxResults);
+        return uriBuilder.toString();
     }
 
     @Override
@@ -100,5 +112,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<List<Book>> loader) {
         bookAdapter.clear();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
