@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         searchEditText.setFocusableInTouchMode(true);
         progressbar.setVisibility(View.GONE);
+        listView.setEmptyView(msgTextView);
     }
 
     @Override
