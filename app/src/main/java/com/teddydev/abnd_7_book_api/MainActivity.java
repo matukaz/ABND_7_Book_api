@@ -2,6 +2,7 @@ package com.teddydev.abnd_7_book_api;
 
 import android.app.LoaderManager;
 import android.content.Loader;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private ProgressBar progressbar;
     private SimpleImageListAdapter bookAdapter;
 
-    private String BASE_URL = "https://www.googleapis.com/books/v1/volumes?q=android";
+    private String BASE_URL = "https://www.googleapis.com/books/v1/volumes";
 
     private EditText.OnEditorActionListener searchOnEditActionListener = new EditText.OnEditorActionListener() {
 
@@ -49,12 +50,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             return false;
         }
     };
-
-    private String buildUrl(String parameter) {
-        StringBuilder url = new StringBuilder();
-        url.append(BASE_URL);
-        url.append(parameter);
-        return url.toString();
+    private String buildUrl(String searchParameter) {
+        Uri baseUri = Uri.parse(BASE_URL);
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+        uriBuilder.appendQueryParameter("q", searchParameter);
+        return uriBuilder.toString();
     }
 
     @Override
